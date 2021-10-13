@@ -1,0 +1,1 @@
+A Chrome and Firefox extension that adds keyboard shortcuts for navigating PRs

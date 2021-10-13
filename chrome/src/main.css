@@ -1,0 +1,12 @@
+.focused-by-extension.review-comment {
+    background-color: #fff6f066;
+}
+
+.focused-by-extension.timeline-comment,
+.focused-by-extension.timeline-comment.current-user {
+    border-color: #28e;
+}
+
+.focused-by-extension.timeline-comment::before {
+    border-right-color: #28e !important;
+}
