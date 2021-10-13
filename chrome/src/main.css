@@ -1,5 +1,12 @@
 .focused-by-extension.review-comment {
-    background-color: #fff6f066;
+    border: 1px solid #28d !important;
+    margin: -1px -1px -1px -1px;
+}
+.focused-by-extension.review-comment:first-child {
+    border-radius: 4px 4px 0 0;
+}
+.focused-by-extension:last-child {
+    margin-bottom: 0;
 }
 
 .focused-by-extension.timeline-comment,

@@ -1,9 +1,9 @@
 {
-  "name": "GitHub comment navigator",
+  "name": "GitHub PR shortcuts",
   "version": "0.0.5",
   "manifest_version": 2,
-  "description": "Jump to previous/next GitHub comments with j/k",
-  "homepage_url": "https://github.com/banga/github-extension",
+  "description": "Shortcuts for jumping through changes in a PR quickly",
+  "homepage_url": "https://github.com/banga/github-pr-extension",
   "icons": {
     "256": "icons/icon_256.png"
   },
