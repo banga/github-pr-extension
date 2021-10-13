@@ -4,3 +4,4 @@ A Chrome and Firefox extension that adds keyboard shortcuts for navigating PRs:
 * `n` and `p` to jump to the next/previous comment
 * `l` to like the focused comment
 * `r` to reply to the focused comment
+* `\` to open in vscode, though the path is hardcoded for now
