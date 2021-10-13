@@ -121,6 +121,16 @@ function startReply() {
     }
 }
 
+function openInEditor() {
+    const element = getFocusedElement()[0];
+    const path = element.getAttribute('data-path');
+    const line = element.getAttribute('data-line');
+    if (path) {
+        // TODO: Add settings page
+        window.open(`vscode://file/Users/shrey.banga/h/source/hyperbase/${path}:${line}:0`);
+    }
+}
+
 window.addEventListener('keydown', function (e) {
     if (
         e.altKey ||
@@ -152,6 +162,9 @@ window.addEventListener('keydown', function (e) {
         case 'r':
             startReply();
             e.preventDefault();
+            break;
+        case '\\':
+            openInEditor();
             break;
     }
 });
