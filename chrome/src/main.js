@@ -2,7 +2,6 @@ const INLINE_COMMENT_CLASS = "review-comment";
 const INLINE_COMMENT_SELECTOR = `#files tr.inline-comments .js-comments-holder > .${INLINE_COMMENT_CLASS}`;
 const GLOBAL_COMMENT_CLASS = "timeline-comment";
 const GLOBAL_COMMENT_SELECTOR = `#comments .${GLOBAL_COMMENT_CLASS}`;
-const COMMENT_FOCUSED_CLASS = "focused-by-extension";
 const LIKE_BUTTON_SELECTOR = "button[data-reaction-label='+1']";
 const GLOBAL_REPLY_SELECTOR = "#all_commit_comments .timeline-new-comment button.write-tab";
 const INLINE_REPLY_SELECTOR = ".review-thread-reply-button";
@@ -34,9 +33,6 @@ function focusNext() {
         return;
     }
     const focusedIndex = getFocusedIndex(all);
-    if (focusedIndex < all.length - 1) {
-        focus(all[focusedIndex + 1]);
-    }
 }
 
 function focusPrevious() {
@@ -84,10 +80,10 @@ window.addEventListener("keydown", function(e) {
         return;
     }
     switch (e.key) {
-        case "j":
+        case "n":
             focusNext();
             break;
-        case "k":
+        case "p":
             focusPrevious();
             break;
         case "l":
