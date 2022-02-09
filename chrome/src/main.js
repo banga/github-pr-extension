@@ -17,35 +17,49 @@ function query(selector) {
 
 /* Focus */
 
+/** @returns {Array<Element>} */
+function getAllFocusedElements() {
+    return query(`.${FOCUSED_CLASS}`);
+}
+
+/** @returns {Element | undefined} */
+function getFocusedElement() {
+    return getAllFocusedElements()[0];
+}
+
 function focusElement(elem) {
-    getFocusedElement().forEach((comment) => comment.classList.remove(FOCUSED_CLASS));
+    getAllFocusedElements().forEach((comment) => comment.classList.remove(FOCUSED_CLASS));
     elem.classList.add(FOCUSED_CLASS);
     elem.focus();
     elem.scrollIntoViewIfNeeded();
 }
 
-function getFocusedElement() {
-    return query(`.${FOCUSED_CLASS}`);
-}
-
-/** @param {Array<Element>} elems  */
-function getFocusedIndex(elems) {
-    return elems.findIndex((elem) => elem.classList.contains(FOCUSED_CLASS));
-}
-
+/** @param {Array<Element>} items */
 function focusNext(items) {
-    const focusedIndex = getFocusedIndex(items);
-    if (focusedIndex < items.length - 1) {
-        focusElement(items[focusedIndex + 1]);
+    const focusedElement = getFocusedElement();
+    for (const item of items) {
+        if (
+            !focusedElement ||
+            focusedElement.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING
+        ) {
+            focusElement(item);
+            return;
+        }
     }
 }
 
+/** @param {Array<Element>} items */
 function focusPrevious(items) {
-    const focusedIndex = getFocusedIndex(items);
-    if (focusedIndex > 0) {
-        focusElement(items[focusedIndex - 1]);
-    } else {
-        focusElement(items[0]);
+    const focusedElement = getFocusedElement();
+    items.reverse();
+    for (const item of items) {
+        if (
+            !focusedElement ||
+            focusedElement.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_PRECEDING
+        ) {
+            focusElement(item);
+            return;
+        }
     }
 }
 
@@ -109,11 +123,10 @@ function toggleLike() {
 }
 
 function startReply() {
-    const focused = getFocusedElement();
-    if (!focused.length) {
+    const comment = getFocusedElement();
+    if (!comment) {
         return;
     }
-    const comment = focused[0];
     if (comment.classList.contains(INLINE_COMMENT_CLASS)) {
         comment.parentElement.parentElement.querySelector(INLINE_REPLY_SELECTOR).click();
     } else {
@@ -122,12 +135,17 @@ function startReply() {
 }
 
 function openInEditor() {
-    const element = getFocusedElement()[0];
+    const element = getFocusedElement();
+    if (!element) {
+        return;
+    }
     const path = element.getAttribute('data-path');
     const line = element.getAttribute('data-line');
     if (path) {
-        // TODO: Add settings page
-        window.open(`vscode://file/Users/shrey.banga/h/source/hyperbase/${path}:${line}:0`);
+        chrome.storage.sync.get('editorUrl', function ({editorUrl}) {
+            const url = editorUrl.replace(`{path}`, path).replace('{line}', line);
+            window.open(url);
+        });
     }
 }
 
