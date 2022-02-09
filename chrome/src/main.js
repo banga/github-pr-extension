@@ -34,22 +34,22 @@ function focusElement(elem) {
     elem.scrollIntoViewIfNeeded();
 }
 
-/** @param {Array<Element>} items */
-function focusNext(items) {
+/** @returns {Element | null} */
+function getFirstElementAfterFocused(items) {
     const focusedElement = getFocusedElement();
     for (const item of items) {
         if (
             !focusedElement ||
             focusedElement.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING
         ) {
-            focusElement(item);
-            return;
+            return item;
         }
     }
+    return null;
 }
 
-/** @param {Array<Element>} items */
-function focusPrevious(items) {
+/** @returns {Element | null} */
+function getLastElementBeforeFocused(items) {
     const focusedElement = getFocusedElement();
     items.reverse();
     for (const item of items) {
@@ -57,9 +57,25 @@ function focusPrevious(items) {
             !focusedElement ||
             focusedElement.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_PRECEDING
         ) {
-            focusElement(item);
-            return;
+            return item;
         }
+    }
+    return null;
+}
+
+/** @param {Array<Element>} items */
+function focusNext(items) {
+    const nextElement = getFirstElementAfterFocused(items);
+    if (nextElement) {
+        focusElement(nextElement);
+    }
+}
+
+/** @param {Array<Element>} items */
+function focusPrevious(items) {
+    const prevElement = getLastElementBeforeFocused(items);
+    if (prevElement) {
+        focusElement(prevElement);
     }
 }
 
@@ -135,9 +151,12 @@ function startReply() {
 }
 
 function openInEditor() {
-    const element = getFocusedElement();
+    let element = getFocusedElement();
     if (!element) {
         return;
+    }
+    if (!element.hasAttribute('data-path')) {
+        element = getLastElementBeforeFocused(getCommentButtonsAtChangeBoundaries());
     }
     const path = element.getAttribute('data-path');
     const line = element.getAttribute('data-line');
