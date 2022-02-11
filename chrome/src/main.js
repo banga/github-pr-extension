@@ -10,9 +10,17 @@ const INLINE_REPLY_SELECTOR = '.review-thread-reply-button';
 const ADD_LINE_COMMENT_BUTTON_SELECTOR =
     '.blob-code-addition > .add-line-comment, .blob-code-deletion > .add-line-comment';
 
+/**
+ * @param {Element} element
+ * @returns {boolean}
+ */
+function isVisible(element) {
+    return element.offsetWidth || element.offsetHeight || element.getClientRects().length;
+}
+
 /** @return {Array<Element>}  */
 function query(selector) {
-    return Array.from(document.querySelectorAll(selector));
+    return Array.from(document.querySelectorAll(selector)).filter(isVisible);
 }
 
 /* Focus */
