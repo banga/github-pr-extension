@@ -213,3 +213,11 @@ window.addEventListener('keydown', function (e) {
             break;
     }
 });
+
+// Automate the daily clickthrough to hit SSO.
+window.addEventListener('load', function(e) {
+    const ssoButton = document.querySelector(".org-sso button[type='submit']");
+    if (ssoButton) {
+        ssoButton.click();
+    }
+});
