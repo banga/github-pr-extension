@@ -4,6 +4,7 @@ const GLOBAL_COMMENT_CLASS = 'timeline-comment';
 const GLOBAL_COMMENT_SELECTOR = `#comments .${GLOBAL_COMMENT_CLASS}`;
 const ALL_COMMENTS_SELECTOR = `${INLINE_COMMENT_SELECTOR},${GLOBAL_COMMENT_SELECTOR}`;
 const FOCUSED_CLASS = 'focused-by-extension';
+const REACTION_DROPDOWN_CLASS = 'reaction-dropdown-button';
 const LIKE_BUTTON_SELECTOR = "button[data-reaction-label='+1']";
 const GLOBAL_REPLY_SELECTOR = '#all_commit_comments .timeline-new-comment button.write-tab';
 const INLINE_REPLY_SELECTOR = '.review-thread-reply-button';
@@ -143,6 +144,7 @@ function focusPreviousChange() {
 /* Actions */
 
 function toggleLike() {
+    document.querySelector(`.${FOCUSED_CLASS} .${REACTION_DROPDOWN_CLASS}`).click();
     query(`.${FOCUSED_CLASS} ${LIKE_BUTTON_SELECTOR}`).forEach((comment) => comment.click());
 }
 
@@ -215,7 +217,7 @@ window.addEventListener('keydown', function (e) {
 });
 
 // Automate the daily clickthrough to hit SSO.
-window.addEventListener('load', function(e) {
+window.addEventListener('load', function (e) {
     const ssoButton = document.querySelector(".org-sso button[type='submit']");
     if (ssoButton) {
         ssoButton.click();
