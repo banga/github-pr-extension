@@ -173,7 +173,7 @@ function openInEditor() {
     if (path) {
         chrome.storage.sync.get('editorUrl', function ({editorUrl}) {
             const url = editorUrl.replace(`{path}`, path).replace('{line}', line);
-            window.open(url);
+            window.open(url, '_blank', 'noopener');
         });
     }
 }
