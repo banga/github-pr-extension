@@ -171,9 +171,11 @@ function openInEditor() {
     const path = element.getAttribute('data-path');
     const line = element.getAttribute('data-line');
     if (path) {
-        chrome.storage.sync.get('editorUrl', function ({editorUrl}) {
-            const url = editorUrl.replace(`{path}`, path).replace('{line}', line);
-            window.open(url, '_blank', 'noopener');
+        chrome.storage.sync.get('editorUrl').then(({editorUrl}) => {
+            if (editorUrl) {
+                const url = editorUrl.replace(`{path}`, path).replace('{line}', line);
+                window.open(url, '_blank', 'noopener');
+            }
         });
     }
 }

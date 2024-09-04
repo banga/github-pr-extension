@@ -1,13 +1,14 @@
 {
     "name": "GitHub PR shortcuts",
-    "version": "0.0.8",
-    "manifest_version": 2,
+    "version": "0.0.9",
+    "manifest_version": 3,
     "description": "Shortcuts for jumping through changes in a PR quickly",
     "homepage_url": "https://github.com/banga/github-pr-extension",
     "icons": {
         "256": "icons/icon_256.png"
     },
-    "permissions": ["https://github.com/", "storage"],
+    "permissions": ["storage"],
+    "host_permissions": ["https://github.com/"],
     "content_scripts": [
         {
             "matches": ["https://github.com/*"],
