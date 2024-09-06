@@ -8,9 +8,9 @@ A Chrome and Firefox extension that adds keyboard shortcuts for navigating PRs:
 
 ## Install Instructions
 
-git clone git@github.com:banga/github-pr-extension.git
-Go to chrome://extensions
-Click "Load unpacked"
-Select the github-pr-extension/chrome directory
+* git clone git@github.com:banga/github-pr-extension.git
+* Go to chrome://extensions
+* Click "Load unpacked"
+* Select the github-pr-extension/chrome directory
 
 [Official Chrome docs](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked)
