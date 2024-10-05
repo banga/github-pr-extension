@@ -168,12 +168,16 @@ function openInEditor() {
     if (!element.hasAttribute('data-path')) {
         element = getLastElementBeforeFocused(getCommentButtonsAtChangeBoundaries());
     }
+    const repo = window.location.pathname.split('/')[2];
     const path = element.getAttribute('data-path');
     const line = element.getAttribute('data-line');
     if (path) {
         chrome.storage.sync.get('editorUrl').then(({editorUrl}) => {
             if (editorUrl) {
-                const url = editorUrl.replace(`{path}`, path).replace('{line}', line);
+                const url = editorUrl
+                    .replace('{repo}', repo)
+                    .replace('{path}', path)
+                    .replace('{line}', line);
                 window.open(url, '_blank', 'noopener');
             }
         });
