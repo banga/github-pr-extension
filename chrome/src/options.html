@@ -6,9 +6,14 @@
     <body style="width: 800px; margin: 20px">
         <label>
             <h3>File URL template for Open-in-Editor</h3>
+            <p>
+                <code>{repo}</code>, <code>{path}</code> and <code>{line}</code> will be replaced
+                with the current repo, file path and line number.
+            </p>
+            <p>Example: <code>vscode://file/Users/shrey/code/{repo}/{path}:{line}:0</code></p>
             <input
                 type="text"
-                placeholder="vscode://file/path/to/repo/{path}:{line}:0"
+                placeholder="vscode://file/path/to/{repo}/{path}:{line}:0"
                 id="editor-url"
                 size="80"
             />
