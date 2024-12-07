@@ -12,30 +12,42 @@ const ADD_LINE_COMMENT_BUTTON_SELECTOR =
     '.blob-code-addition > .add-line-comment, .blob-code-deletion > .add-line-comment';
 
 /**
- * @param {Element} element
+ * @param {HTMLElement} element
  * @returns {boolean}
  */
 function isVisible(element) {
     return element.offsetWidth || element.offsetHeight || element.getClientRects().length;
 }
 
-/** @return {Array<Element>}  */
+/** @param {HTMLElement} element */
+function isInViewport(element) {
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= window.innerHeight &&
+        rect.right <= window.innerWidth
+    );
+}
+
+/** @return {Array<HTMLElement>}  */
 function query(selector) {
     return Array.from(document.querySelectorAll(selector)).filter(isVisible);
 }
 
 /* Focus */
 
-/** @returns {Array<Element>} */
+/** @returns {Array<HTMLElement>} */
 function getAllFocusedElements() {
     return query(`.${FOCUSED_CLASS}`);
 }
 
-/** @returns {Element | undefined} */
+/** @returns {HTMLElement | undefined} */
 function getFocusedElement() {
     return getAllFocusedElements()[0];
 }
 
+/** @param {HTMLElement} elem */
 function focusElement(elem) {
     getAllFocusedElements().forEach((comment) => comment.classList.remove(FOCUSED_CLASS));
     elem.classList.add(FOCUSED_CLASS);
@@ -43,7 +55,7 @@ function focusElement(elem) {
     elem.scrollIntoViewIfNeeded();
 }
 
-/** @returns {Element | null} */
+/** @returns {HTMLElement | null} */
 function getFirstElementAfterFocused(items) {
     const focusedElement = getFocusedElement();
     for (const item of items) {
@@ -57,7 +69,7 @@ function getFirstElementAfterFocused(items) {
     return null;
 }
 
-/** @returns {Element | null} */
+/** @returns {HTMLElement | null} */
 function getLastElementBeforeFocused(items) {
     const focusedElement = getFocusedElement();
     items.reverse();
@@ -72,7 +84,7 @@ function getLastElementBeforeFocused(items) {
     return null;
 }
 
-/** @param {Array<Element>} items */
+/** @param {Array<HTMLElement>} items */
 function focusNext(items) {
     const nextElement = getFirstElementAfterFocused(items);
     if (nextElement) {
@@ -80,7 +92,7 @@ function focusNext(items) {
     }
 }
 
-/** @param {Array<Element>} items */
+/** @param {Array<HTMLElement>} items */
 function focusPrevious(items) {
     const prevElement = getLastElementBeforeFocused(items);
     if (prevElement) {
@@ -108,37 +120,24 @@ function getParentRowForAddCommentButton(element) {
     return element.parentElement.parentElement;
 }
 
-function getCommentButtonsAtChangeBoundaries() {
-    const elements = query(ADD_LINE_COMMENT_BUTTON_SELECTOR);
-    if (elements.length === 0) {
-        return [];
-    }
-
-    // Filter out buttons in rows that are not at the end of a contiguous change
-    const filteredElements = [];
-    let currentElement = elements[0];
-    for (const nextElement of elements.slice(1)) {
-        if (
-            getParentRowForAddCommentButton(currentElement) !==
-                getParentRowForAddCommentButton(nextElement) &&
-            getParentRowForAddCommentButton(currentElement).nextElementSibling !==
-                getParentRowForAddCommentButton(nextElement)
-        ) {
-            filteredElements.push(currentElement);
-        }
-        currentElement = nextElement;
-    }
-    filteredElements.push(currentElement);
-
-    return filteredElements;
+function getAllCommentButtons() {
+    return query(ADD_LINE_COMMENT_BUTTON_SELECTOR);
 }
 
 function focusNextChange() {
-    focusNext(getCommentButtonsAtChangeBoundaries());
+    focusNext(getAllCommentButtons());
 }
 
 function focusPreviousChange() {
-    focusPrevious(getCommentButtonsAtChangeBoundaries());
+    focusPrevious(getAllCommentButtons());
+}
+
+function focusNextPage() {
+    focusNext(getAllCommentButtons().filter((elem) => !isInViewport(elem)));
+}
+
+function focusPreviousPage() {
+    focusPrevious(getAllCommentButtons().filter((elem) => !isInViewport(elem)));
 }
 
 /* Actions */
@@ -165,12 +164,11 @@ function openInEditor() {
     if (!element) {
         return;
     }
-    if (!element.hasAttribute('data-path')) {
-        element = getLastElementBeforeFocused(getCommentButtonsAtChangeBoundaries());
+    if (!element.dataset.path) {
+        element = getLastElementBeforeFocused(getAllCommentButtons());
     }
     const repo = window.location.pathname.split('/')[2];
-    const path = element.getAttribute('data-path');
-    const line = element.getAttribute('data-line');
+    const {path, line} = element.dataset;
     if (path) {
         chrome.storage.sync.get('editorUrl').then(({editorUrl}) => {
             if (editorUrl) {
@@ -187,7 +185,6 @@ function openInEditor() {
 window.addEventListener('keydown', function (e) {
     if (
         e.altKey ||
-        e.shiftKey ||
         e.ctrlKey ||
         e.metaKey ||
         e.target.nodeName == 'TEXTAREA' ||
@@ -202,6 +199,12 @@ window.addEventListener('keydown', function (e) {
             break;
         case 'k':
             focusPreviousChange();
+            break;
+        case 'J':
+            focusNextPage();
+            break;
+        case 'K':
+            focusPreviousPage();
             break;
         case 'n':
             focusNextComment();
