@@ -10,6 +10,8 @@ const GLOBAL_REPLY_SELECTOR = '#all_commit_comments .timeline-new-comment button
 const INLINE_REPLY_SELECTOR = '.review-thread-reply-button';
 const ADD_LINE_COMMENT_BUTTON_SELECTOR =
     '.blob-code-addition > .add-line-comment, .blob-code-deletion > .add-line-comment';
+const SSO_BUTTON_SELECTOR = '.org-sso button[type="submit"]';
+const LOAD_DIFF_BUTTON_SELECTOR = 'button.load-diff-button';
 
 /**
  * @param {HTMLElement} element
@@ -225,10 +227,29 @@ window.addEventListener('keydown', function (e) {
     }
 });
 
-// Automate the daily clickthrough to hit SSO.
-window.addEventListener('load', function (e) {
-    const ssoButton = document.querySelector(".org-sso button[type='submit']");
+function clickSsoButton() {
+    // Automate the daily clickthrough to hit SSO.
+    const ssoButton = document.querySelector(SSO_BUTTON_SELECTOR);
     if (ssoButton) {
         ssoButton.click();
+    }
+}
+
+function clickLoadDiffButtons() {
+    const loadDiffButtons = query(LOAD_DIFF_BUTTON_SELECTOR);
+    for (const button of loadDiffButtons) {
+        button.click();
+    }
+}
+
+window.addEventListener('load', function (e) {
+    clickSsoButton();
+    clickLoadDiffButtons();
+
+    // Handle when content is loaded later via
+    // https://github.com/github/include-fragment-element
+    const loaders = query('include-fragment');
+    for (const loader of loaders) {
+        loader.addEventListener('load', clickLoadDiffButtons);
     }
 });

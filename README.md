@@ -7,6 +7,8 @@ A Chrome and Firefox extension that adds keyboard shortcuts for navigating PRs:
 -   `r` to reply to the focused comment
 -   `\` to open in your editor. The editor URL can be set in the options.
 
+It will also auto-click buttons to sign in via SSO and load diffs for large files.
+
 ## Install Instructions
 
 -   git clone git@github.com:banga/github-pr-extension.git
