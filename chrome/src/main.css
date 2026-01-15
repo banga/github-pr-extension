@@ -17,3 +17,9 @@
 .focused-by-extension.timeline-comment::before {
     border-right-color: #28e !important;
 }
+
+.focused-by-extension.blob-code-addition,
+.focused-by-extension.blob-code-deletion {
+    outline: 2px solid #28d !important;
+    outline-offset: -2px;
+}

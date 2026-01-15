@@ -9,7 +9,7 @@ const LIKE_BUTTON_SELECTOR = "button[data-reaction-label='+1']";
 const GLOBAL_REPLY_SELECTOR = '#all_commit_comments .timeline-new-comment button.write-tab';
 const INLINE_REPLY_SELECTOR = '.review-thread-reply-button';
 const ADD_LINE_COMMENT_BUTTON_SELECTOR =
-    '.blob-code-addition > .add-line-comment, .blob-code-deletion > .add-line-comment';
+    '.blob-code-addition:has(.add-line-comment), .blob-code-deletion:has(.add-line-comment)';
 const SSO_BUTTON_SELECTOR = '.org-sso button[type="submit"]';
 const LOAD_DIFF_BUTTON_SELECTOR = 'button.load-diff-button';
 
@@ -166,11 +166,10 @@ function openInEditor() {
     if (!element) {
         return;
     }
-    if (!element.dataset.path) {
-        element = getLastElementBeforeFocused(getAllCommentButtons());
-    }
+    // The data-path and data-line are on the button inside the cell
+    const button = element.querySelector('.add-line-comment') || element;
     const repo = window.location.pathname.split('/')[2];
-    const {path, line} = element.dataset;
+    const {path, line} = button.dataset;
     if (path) {
         chrome.storage.sync.get('editorUrl').then(({editorUrl}) => {
             if (editorUrl) {
